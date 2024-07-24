@@ -17,17 +17,19 @@ function [Y,t]=iAdams(f,y0,t0,b,acc,step)
     end
     i=1;
     B=getb(acc+1);
+    fsup=floor((b-t0)/step);
+    fs=[zeros(sizey,fsup) fs];
     while b-t(1,i)>=step
         t(:,i+1)=t(:,i)+stept;
-        Y(:,i+1)=Y(:,i)+step*(B(acc,1:acc)*fs(:,1:acc)')';
-        fs=[f(t(:,i),Y(:,i)) fs];
+        Y(:,i+1)=Y(:,i)+step*(B(acc,1:acc)*fs(:,fsup-i+2:fsup-i+1+acc)')';
+        fs(:,fsup-i+1)=f(t(:,i),Y(:,i));
         last=Y(:,i+1)+ones(sizey,1);
         k=0;
         while last~=Y(:,i+1) & k~=100
             k=k+1;
             last=Y(:,i+1);
-            Y(:,i+1)=Y(:,i)+step*(B(acc+1,1:acc+1)*fs(:,1:acc+1)')';
-            fs(:,1)=f(t(:,i+1),Y(:,i+1));
+            Y(:,i+1)=Y(:,i)+step*(B(acc+1,1:acc+1)*fs(:,fsup-i+1:fsup-i+1+acc)')';
+            fs(:,fsup-i+1)=f(t(:,i+1),Y(:,i+1));
         end
         i=i+1;
     end

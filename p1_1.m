@@ -14,7 +14,7 @@ fun=@(t,x)[x(3) x(4) (F_z*cos(w*t(1))+eta_d*(x(4)-x(3))+...
 t0=0;
 x0=[0 0 0 0]';%初值
 t_e=2*pi/w*40;%时长
-step=5e-4;%步长
+step=1e-4;%步长
 acc=10;%精度阶数
 [X,T]=iAdams(fun,x0,t0,t_e,acc,step);%使用Adams内插法求解
 T=T(1,:);
@@ -34,4 +34,4 @@ xlabel('时间 s')
 ylabel('速度 m/s')
 restep=0.2/step*(1:length(0:0.2:t_e)-1);
 writematrix([T(1,restep)' X(1,restep)' X(2,restep)' X(3,restep)' X(4,restep)'],'result1-1.xlsx')
-disp(X(:,[10 20 40 60 100]/step));
+writematrix([[10 20 40 60 100];X(:,[10 20 40 60 100]/step)],'p1_1.xlsx')
