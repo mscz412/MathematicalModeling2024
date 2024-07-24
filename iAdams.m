@@ -21,15 +21,17 @@ function [Y,t]=iAdams(f,y0,t0,b,acc,step)
         t(:,i+1)=t(:,i)+stept;
         Y(:,i+1)=Y(:,i)+step*(B(acc,1:acc)*fs(:,1:acc)')';
         fs=[f(t(:,i),Y(:,i)) fs];
-        last=Y(i+1)+1;
-        while last~=Y(:,i+1)
+        last=Y(:,i+1)+ones(sizey,1);
+        k=0;
+        while last~=Y(:,i+1) & k~=100
+            k=k+1;
             last=Y(:,i+1);
             Y(:,i+1)=Y(:,i)+step*(B(acc+1,1:acc+1)*fs(:,1:acc+1)')';
             fs(:,1)=f(t(:,i+1),Y(:,i+1));
         end
         i=i+1;
     end
-    if b-t(1,i)>=1e-10
+    if b-t(1,i)>=1e-6
         Y(:,i+1)=Y(:,i)+(b-t(1,i))*(B(acc,1:acc)*fs(:,1:acc)')';
         t(:,i+1)=b*ones(sizey,1);
     end

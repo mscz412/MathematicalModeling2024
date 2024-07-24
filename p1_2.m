@@ -13,12 +13,25 @@ k_F*(x(2)-x(1))-eta_z*x(3)-pho*g*R_o^2*pi*x(1))/(m_o+m_z_add) ...
 %x(1)为浮子位移,x(2)为振子位移,x(3)为浮子速度,x(4)为振子速度
 t0=0;
 x0=[0 0 0 0]';%初值
-t_e=100;%时长
-step=1e-3;%步长
+t_e=2*pi/w*40;%时长
+step=5e-4;%步长
 acc=10;%精度阶数
-[X,T]=iAdams(fun,x0,t0,t_e,acc,step);
-T=squeeze(T(1,100*(1:1000)));
+[X,T]=iAdams(fun,x0,t0,t_e,acc,step);%使用Adams内插法求解
+T=T(1,:);
 subplot(1,2,1)
-plot(T,X(1,100*(1:1000)))
+plot(T,X(1,:),'r')
+hold on
+plot(T,X(1,:)-X(2,:),'b')
+legend('浮子','振子')
+xlabel('时间 s')
+ylabel('位移 m')
 subplot(1,2,2)
-plot(T,X(2,100*(1:1000)))
+plot(T,X(3,:),'r')
+hold on
+plot(T,X(3,:)-X(4,:),'b')
+legend('浮子','振子')
+xlabel('时间 s')
+ylabel('速度 m/s')
+restep=0.2/step*(1:length(0:0.2:t_e)-1);
+writematrix([T(1,restep)' X(1,restep)' X(2,restep)' X(3,restep)' X(4,restep)'],'result1-2.xlsx')
+disp(X(:,[10 20 40 60 100]/step));
