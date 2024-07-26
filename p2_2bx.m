@@ -4,3 +4,6 @@ parfor i=1:25
         P(i,j)=p2_2([4000*i 0.04*j]);
     end
 end
+xlabel('直线阻尼系数')
+ylabel('幂指数')
+zlabel('P(w)')
