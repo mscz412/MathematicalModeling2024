@@ -7,11 +7,11 @@ function [Y,t]=iAdams(f,y0,t0,b,acc,step)
     fs(:,1)=f(t,y0);
     y=y0;
     for i=1:acc-1
-        y(:,i+1)=y(:,i)-step*f(t-stept*(i-1),y(:,i));
-        last=y(:,i+1);
-        while last~=y(:,i+1)
+        y(:,i+1)=y(:,i)-step*f(t-stept*i,y(:,i));
+        last=y(:,i+1)+ones(sizey,1);
+        while any(last-y(:,i+1))
             last=y(:,i+1);
-            y(:,i+1)=y(:,i)-step*f(t-stept*i,y(:,i+1));
+            y(:,i+1)=y(:,i)-step/2*(f(t-stept*i,y(:,i))+f(t-stept*i,y(:,i+1)));
         end
         fs(:,i+1)=f(t-stept*i,y(:,i+1));
     end
@@ -25,7 +25,7 @@ function [Y,t]=iAdams(f,y0,t0,b,acc,step)
         fs(:,fsup-i+1)=f(t(:,i),Y(:,i));
         last=Y(:,i+1)+ones(sizey,1);
         k=0;
-        while last~=Y(:,i+1) & k~=100
+        while any(last-Y(:,i+1)) & k~=100
             k=k+1;
             last=Y(:,i+1);
             Y(:,i+1)=Y(:,i)+step*(B(acc+1,1:acc+1)*fs(:,fsup-i+1:fsup-i+1+acc)')';
